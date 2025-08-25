@@ -1,0 +1,25 @@
+{
+  "name": "novel-translator",
+  "version": "1.0.0",
+  "description": "A full-stack web application for translating novels from EPUB files using Google Gemini AI",
+  "scripts": {
+    "install:all": "cd backend && npm install && cd ../frontend && npm install",
+    "build": "cd frontend && npm run build",
+    "start": "cd backend && npm start",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev": "npm run dev:backend & npm run dev:frontend",
+    "heroku-postbuild": "npm run install:all && npm run build"
+  },
+  "keywords": [
+    "novel",
+    "translator",
+    "epub",
+    "gemini",
+    "react",
+    "nodejs",
+    "mongodb"
+  ],
+  "author": "",
+  "license": "MIT"
+}
