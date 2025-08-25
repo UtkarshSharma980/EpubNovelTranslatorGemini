@@ -3,7 +3,11 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { BookOpen, Calendar, User, Trash2, Eye } from 'lucide-react';
 
-const API_URL = process.env.NODE_ENV === 'production' ? '/api' : 'http://localhost:5000/api';
+const API_URL = import.meta.env.VITE_API_URL || (
+  import.meta.env.MODE === 'production' 
+    ? 'https://your-render-app.onrender.com/api' 
+    : 'http://localhost:10000/api'
+);
 
 const NovelList = () => {
   const [novels, setNovels] = useState([]);

@@ -10,12 +10,23 @@ const { GoogleGenerativeAI } = require('@google/generative-ai');
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 10000;
 
-// Middleware
-app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// CORS Configuration for Cloudflare Pages
+app.use(cors({
+  origin: [
+    'http://localhost:5173',
+    'https://epubnoveltranslatorgemini.pages.dev/',
+    'https://*.pages.dev',
+    process.env.FRONTEND_URL
+  ].filter(Boolean),
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
 // Configure multer for file uploads
 const storage = multer.memoryStorage();
@@ -26,7 +37,7 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/novel-tra
 
 const db = mongoose.connection;
 db.on('error', (error) => {
-  console.error('MongoDB connection error:', error);
+  console.error('❌ MongoDB connection error:', error);
 });
 db.once('open', () => {
   console.log('✅ Connected to MongoDB successfully');
@@ -40,6 +51,24 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const novelRoutes = require('./routes/novels');
 const chapterRoutes = require('./routes/chapters');
 const translationRoutes = require('./routes/translations');
+
+// Health check endpoint (for Render)
+app.get('/', (req, res) => {
+  res.json({ 
+    message: 'Novel Translator API',
+    version: '1.0.0',
+    status: 'Running',
+    timestamp: new Date().toISOString()
+  });
+});
+
+app.get('/health', (req, res) => {
+  res.status(200).json({ 
+    status: 'OK', 
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV 
+  });
+});
 
 // Use routes
 app.use('/api/novels', novelRoutes);
