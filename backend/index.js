@@ -15,8 +15,13 @@ const PORT = process.env.PORT || 10000;
 // Enhanced CORS Configuration for Cloudflare Pages
 const corsOptions = {
   origin: function (origin, callback) {
+    console.log('🔍 CORS Request from origin:', origin);
+    
     // Allow requests with no origin (like mobile apps or curl requests)
-    if (!origin) return callback(null, true);
+    if (!origin) {
+      console.log('✅ Allowing request with no origin');
+      return callback(null, true);
+    }
     
     const allowedOrigins = [
       'http://localhost:5173',
@@ -26,14 +31,17 @@ const corsOptions = {
     
     // Allow any .pages.dev subdomain
     if (origin.endsWith('.pages.dev')) {
+      console.log('✅ Allowing .pages.dev domain:', origin);
       return callback(null, true);
     }
     
     // Check if origin is in allowed list
     if (allowedOrigins.includes(origin) || origin === process.env.FRONTEND_URL) {
+      console.log('✅ Allowing whitelisted origin:', origin);
       return callback(null, true);
     }
     
+    console.log('❌ CORS blocked origin:', origin);
     callback(new Error('Not allowed by CORS'));
   },
   credentials: true,

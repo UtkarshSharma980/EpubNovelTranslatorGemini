@@ -5,9 +5,15 @@ import { BookOpen, Calendar, User, Trash2, Eye } from 'lucide-react';
 
 const API_URL = import.meta.env.VITE_API_URL || (
   import.meta.env.MODE === 'production' 
-    ? 'https://your-render-app.onrender.com/api' 
+    ? 'https://novel-translator-backend.onrender.com/api' 
     : 'http://localhost:10000/api'
 );
+
+// Debug logging
+console.log('🔧 Debug Info:');
+console.log('Mode:', import.meta.env.MODE);
+console.log('VITE_API_URL:', import.meta.env.VITE_API_URL);
+console.log('Final API_URL:', API_URL);
 
 const NovelList = () => {
   const [novels, setNovels] = useState([]);
